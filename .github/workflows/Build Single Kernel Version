@@ -1,0 +1,69 @@
+name: Build Single Kernel Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      kernel_version:
+        description: "Kernel version (e.g., 6.1)"
+        required: true
+        type: string
+        default: "6.1"
+      android_version:
+        description: "Android version"
+        required: true
+        type: string
+        default: "android14"
+      sublevel:
+        description: "Sublevel (e.g., 212)"
+        required: true
+        type: string
+        default: "212"
+      os_patch_level:
+        description: "OS patch level (e.g., 2025-01)"
+        required: true
+        type: string
+        default: "2025-01"
+      variant:
+        description: "Variant"
+        required: false
+        type: string
+        default: "gki"
+      feature_set:
+        description: "Feature Set"
+        type: choice
+        options:
+          - KSUN+SUSFS+BBG+NET+DS
+          - KSUN+SUSFS+BBG
+          - KSUN+SUSFS+NET
+          - KSUN+SUSFS+DS
+          - KSUN+SUSFS
+          - KSUN+BBG
+          - KSUN+NET
+          - KSUN+DS
+          - KSUN
+          - NONE
+          - FULL
+        default: FULL
+      use_repo:
+        description: "Use repo for downloading kernel source"
+        type: boolean
+        default: true
+      use_latest_commits:
+        description: "Use branch tip for KernelSU and SUSFS instead of pinned commits"
+        type: boolean
+        default: true
+
+jobs:
+  build-single:
+    uses: ./.github/workflows/kernel-build.yml
+    with:
+      version: '${{ inputs.android_version }}-${{ inputs.kernel_version }}'
+      android_version: ${{ inputs.android_version }}
+      kernel_version: ${{ inputs.kernel_version }}
+      sublevel: ${{ inputs.sublevel }}
+      os_patch_level: ${{ inputs.os_patch_level }}
+      variant: ${{ inputs.variant }}
+      feature_set: ${{ inputs.feature_set }}
+      use_repo: ${{ inputs.use_repo }}
+      use_latest_commits: ${{ inputs.use_latest_commits }}
+    secrets: inherit

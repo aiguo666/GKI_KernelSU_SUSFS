@@ -1,4 +1,3 @@
-# .github/workflows/build-single-kernel.yml
 name: Build Single Kernel Version
 
 on:

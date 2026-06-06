@@ -1,4 +1,4 @@
-name: Kernel Build Process
+name: Kernel Build Process2
 permissions:
   contents: write
   actions: write

@@ -1,0 +1,64 @@
+name: Build Single GKI Kernel (No Sublevel)
+
+on:
+  workflow_dispatch:
+    inputs:
+      android_version:
+        description: "Android Version"
+        required: true
+        type: choice
+        options: [android12, android13, android14, android15, android16]
+        default: android14
+      kernel_version:
+        description: "Kernel Version"
+        required: true
+        type: choice
+        options: ["5.10", "5.15", "6.1", "6.6", "6.12"]
+        default: "6.1"
+      os_patch_level:
+        description: "OS Patch Level (e.g. 2025-12, 2024-09)"
+        required: true
+        type: string
+        default: "2025-06"
+      variant:
+        description: "Build Variant"
+        required: false
+        type: string
+        default: "Normal"
+      feature_set:
+        description: "Feature Set"
+        type: choice
+        options:
+          - FULL
+          - KSUN+SUSFS
+          - KSUN
+          - NONE
+        default: FULL
+      use_repo:
+        description: "Use repo to download kernel source"
+        type: boolean
+        default: true
+      use_latest_commits:
+        description: "Use latest KernelSU/SUSFS branch tip"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      version:          "${{ inputs.android_version }}-${{ inputs.kernel_version }}"
+      android_version:  ${{ inputs.android_version }}
+      kernel_version:   ${{ inputs.kernel_version }}
+      # sublevel 用 os_patch_level 占位（仅用于命名/fragment，不影响源码）
+      sublevel:         ${{ inputs.os_patch_level }}
+      os_patch_level:   ${{ inputs.os_patch_level }}
+      variant:          ${{ inputs.variant }}
+      feature_set:      ${{ inputs.feature_set }}
+      use_repo:         ${{ inputs.use_repo }}
+      use_latest_commits: ${{ inputs.use_latest_commits }}
+    secrets: inherit
